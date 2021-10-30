@@ -1,23 +1,20 @@
-name: import_sorter
+name: import_path_converter
 description: Automatically organize your dart imports
-version: 4.6.0
-repository: "https://github.com/fluttercommunity/import_sorter"
-homepage: "https://mattglei.ch"
-maintainer: Matthew Gleich (@gleich)
-authors:
-  - Matthew Gleich <email@mattglei.ch>
-  - Flutter Community <community@flutter.zone>
+version: 0.0.1
+homepage: https://twitter.com/ymgn9314
+maintainer: Seiya Yamamoto(@ymgn9314)
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  args: ^2.0.0
+  args: ^2.3.0
   tint: ^2.0.0
   yaml: ^3.1.0
 
 dev_dependencies:
   test: ^1.16.7
 
-import_sorter:
-  emojis: true
+import_path_converter:
+  relative: false # Optional, defaults to false
+  # ignored_files: # Optional, defaults to []

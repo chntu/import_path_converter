@@ -7,18 +7,17 @@ import 'package:tint/tint.dart';
 import 'package:yaml/yaml.dart';
 
 // 🌎 Project imports:
-import 'package:import_sorter/args.dart' as local_args;
-import 'package:import_sorter/files.dart' as files;
-import 'package:import_sorter/sort.dart' as sort;
+import 'package:import_path_converter/args.dart' as local_args;
+import 'package:import_path_converter/files.dart' as files;
+import 'package:import_path_converter/convert.dart' as convert;
 
 void main(List<String> args) {
   // Parsing arguments
   final parser = ArgParser();
-  parser.addFlag('emojis', abbr: 'e', negatable: false);
+  parser.addFlag('relative', abbr: 'r', negatable: false);
   parser.addFlag('ignore-config', negatable: false);
   parser.addFlag('help', abbr: 'h', negatable: false);
   parser.addFlag('exit-if-changed', negatable: false);
-  parser.addFlag('no-comments', negatable: false);
   final argResults = parser.parse(args).arguments;
   if (argResults.contains('-h') || argResults.contains('--help')) {
     local_args.outputHelp();
@@ -44,16 +43,14 @@ void main(List<String> args) {
   final pubspecLock = loadYaml(pubspecLockFile.readAsStringSync());
   dependencies.addAll(pubspecLock['packages'].keys);
 
-  var emojis = false;
-  var noComments = false;
+  bool isRelative = false;
   final ignored_files = [];
 
   // Reading from config in pubspec.yaml safely
   if (!argResults.contains('--ignore-config')) {
-    if (pubspecYaml.containsKey('import_sorter')) {
-      final config = pubspecYaml['import_sorter'];
-      if (config.containsKey('emojis')) emojis = config['emojis'];
-      if (config.containsKey('comments')) noComments = !config['comments'];
+    if (pubspecYaml.containsKey('import_path_converter')) {
+      final config = pubspecYaml['import_path_converter'];
+      if (config.containsKey('relative')) isRelative = config['relative'];
       if (config.containsKey('ignored_files')) {
         ignored_files.addAll(config['ignored_files']);
       }
@@ -61,8 +58,7 @@ void main(List<String> args) {
   }
 
   // Setting values from args
-  if (!emojis) emojis = argResults.contains('-e');
-  if (!noComments) noComments = argResults.contains('--no-comments');
+  if (!isRelative) isRelative = argResults.contains('-r');
   final exitOnChange = argResults.contains('--exit-if-changed');
 
   // Getting all the dart files for the project
@@ -83,10 +79,10 @@ void main(List<String> args) {
         RegExp(pattern).hasMatch(key.replaceFirst(currentPath, '')));
   }
 
-  stdout.write('┏━━ Sorting ${dartFiles.length} dart files');
+  stdout.write('┏━━ Converting ${dartFiles.length} dart files');
 
-  // Sorting and writing to files
-  final sortedFiles = [];
+  // Converting and writing to files
+  final convertedFiles = [];
   final success = '✔'.green();
 
   for (final filePath in dartFiles.keys) {
@@ -95,32 +91,32 @@ void main(List<String> args) {
       continue;
     }
 
-    final sortedFile = sort.sortImports(
-        file.readAsLinesSync(), packageName, emojis, exitOnChange, noComments);
-    if (!sortedFile.updated) {
+    final convertedFile = convert.convertImports(
+        file.readAsLinesSync(), packageName, isRelative, exitOnChange, filePath);
+    if (!convertedFile.updated) {
       continue;
     }
-    dartFiles[filePath]?.writeAsStringSync(sortedFile.sortedFile);
-    sortedFiles.add(filePath);
+    dartFiles[filePath]?.writeAsStringSync(convertedFile.convertedFile);
+    convertedFiles.add(filePath);
   }
 
   stopwatch.stop();
 
   // Outputting results
-  if (sortedFiles.length > 1) {
+  if (convertedFiles.length > 1) {
     stdout.write("\n");
   }
-  for (int i = 0; i < sortedFiles.length; i++) {
-    final file = dartFiles[sortedFiles[i]];
+  for (int i = 0; i < convertedFiles.length; i++) {
+    final file = dartFiles[convertedFiles[i]];
     stdout.write(
-        '${sortedFiles.length == 1 ? '\n' : ''}┃  ${i == sortedFiles.length - 1 ? '┗' : '┣'}━━ ${success} Sorted imports for ${file?.path.replaceFirst(currentPath, '')}/');
+        '${convertedFiles.length == 1 ? '\n' : ''}┃  ${i == convertedFiles.length - 1 ? '┗' : '┣'}━━ ${success} Converted imports for ${file?.path.replaceFirst(currentPath, '')}/');
     String filename = file!.path.split(Platform.pathSeparator).last;
     stdout.write(filename + "\n");
   }
 
-  if (sortedFiles.length == 0) {
+  if (convertedFiles.length == 0) {
     stdout.write("\n");
   }
   stdout.write(
-      '┗━━ ${success} Sorted ${sortedFiles.length} files in ${stopwatch.elapsed.inSeconds}.${stopwatch.elapsedMilliseconds} seconds\n');
+      '┗━━ ${success} Converted ${convertedFiles.length} files in ${stopwatch.elapsed.inSeconds}.${stopwatch.elapsedMilliseconds} seconds\n');
 }
