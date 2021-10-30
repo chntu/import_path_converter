@@ -40,7 +40,7 @@ import 'package:example/app.dart';
 
 ## 🚀 Installing
 
-Simply add `import_sorter: ^0.0.1` to your `pubspec.yaml`'s `dev_dependencies`.
+Simply add `import_path_converter: ^1.0.0` to your `pubspec.yaml`'s `dev_dependencies`.
 
 ## 🏃‍♂️ Running
 
@@ -49,7 +49,7 @@ Once you've installed it simply run `flutter pub run import_path_converter:main`
 ## 💻 Command Line
 
 - If you're using a config in the `pubspec.yaml` you can have the program ignore it by adding `--ignore-config`.
-- Want to make sure your files are sorted? Add `--exit-if-changed` to make sure the files are sorted. Good for things like CI.
+- Want to make sure your files are converter? Add `--exit-if-changed` to make sure the files are converted. Good for things like CI.
 - Add the `-h` flag if you need any help from the command line!
 - You can only run import_path_converter on certain files by passing in a regular expression(s) that will only convert certain files. Below are two examples:
   - `pub run import_path_converter:main bin/main.dart lib/args.dart` (only convert paths in bin/main.dart and lib/args.dart)
@@ -60,9 +60,9 @@ Once you've installed it simply run `flutter pub run import_path_converter:main`
 If you use import_path_converter a lot or need to ignore certain files you should look at using the config you put in your `pubspec.yaml`. Ignored files are in the format of regex. This regex is then applied to the project root path (the one outputted to the terminal). Below is an example config setting relative to true and ignoring all files in the lib folder:
 
 ```yaml
-import_sorter:
-  relative: true # Optional, defaults to false
-  ignored_files: # Optional, defaults to []
+import_path_converter:
+  relative: true # Select relative path import or package import(Optional, defaults to false)
+  ignored_files: # Add files to ignore(Optional, defaults to [])
     - \/lib\/*
 ```
 
