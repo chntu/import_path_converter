@@ -36,8 +36,8 @@ ImportConvertData convertImports(
     }
   }
 
-  final convertedFile = convertedLines.join('\n');
-  final original = lines.join('\n');
+  final convertedFile = convertedLines.join('\n') + '\n';
+  final original = lines.join('\n') + '\n';
   if (exitIfChanged && original != convertedFile) {
     if (filePath != null) {
       stdout.writeln(

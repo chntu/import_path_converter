@@ -13,3 +13,6 @@ doc/api/
 # Editor and IDE files
 .idea/
 .vscode/
+
+# asdf
+**/.tool-versions

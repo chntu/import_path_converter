@@ -17,4 +17,5 @@ dev_dependencies:
 
 import_path_converter:
   relative: false # Optional, defaults to false
-  # ignored_files: # Optional, defaults to []
+  ignored_files: # Optional, defaults to []
+    - \/lib\/*
