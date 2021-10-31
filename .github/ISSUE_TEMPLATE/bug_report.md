@@ -3,8 +3,7 @@ name: Bug report
 about: Create a report to help us improve
 title: ''
 labels: 'bug'
-assignees: '@gleich'
-
+assignees: '@ymgn9314'
 ---
 
 **Describe the bug**
@@ -20,10 +19,11 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Meta Information:**
- - Dart Version:
- - `import_sorter` Version:
- - Is it a Flutter project?
- - What version of Flutter are you using (if flutter project):
+
+- Dart Version:
+- `import_path_converter` Version:
+- Is it a Flutter project?
+- What version of Flutter are you using (if flutter project):
 
 **Additional context**
 Add any other context about the problem here.
