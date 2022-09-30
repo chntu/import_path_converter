@@ -80,7 +80,9 @@ String _convertPath(
     // convert to package import
     if (!importPath.contains(':')) {
       importPath = p.normalize(fileDir + '/' + importPath + '/');
-      importPath = importPath.replaceAll(libDir, packagePrefix);
+      importPath = importPath.replaceAll(p.normalize(libDir), packagePrefix);
+      importPath = p.normalize(importPath);
+      importPath = importPath.replaceAll(r'\', '/');
     } else {
       return line;
     }
